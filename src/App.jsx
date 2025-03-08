@@ -7,11 +7,12 @@ function App() {
   const [currentScore, setCurrentScore] = useState(0);
   const [clickedPokemon, setClickedPokemon] = useState([]);
   const [bestScore, setBestScore] = useState(0);
+  let nrOfDesiredPokemon = 2;
 
   useEffect(() => {
-    async function getPokemon(nrOfDesiredPokemon) {
+    async function getPokemon(nrOfPokemon) {
       let tempPokeList = [];
-      for (let i = 1; i < (nrOfDesiredPokemon +1) ; i++) {
+      for (let i = 1; i < (nrOfPokemon +1) ; i++) {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
         const pokemonData = await response.json();
         let pokemonObject = { name: pokemonData.forms[0].name, icon: pokemonData.sprites.front_default, pokeIndex: i}
@@ -20,25 +21,40 @@ function App() {
       console.log("called the api loop")
       setPokeList(tempPokeList);
     }
-    getPokemon(2);
+    getPokemon(nrOfDesiredPokemon);
   }, []);
 
   function submitClickedPokemon(pokeNr) {
     if (clickedPokemon.includes(pokeNr)) {
-      youLost();
+      // youLost();
+      gameFinished();
+      console.log('you Lost')
     } else {
       setClickedPokemon([...clickedPokemon, pokeNr]);
       let tempScore = currentScore +1;
       setCurrentScore(currentScore +1);
       shuffleCards();
       if (tempScore > bestScore) setBestScore(tempScore);
+      if (clickedPokemon.length === (nrOfDesiredPokemon -1)) {
+        console.log('you won')
+        // youWon();
+        gameFinished();
+      }
+      
     }
-    console.log(currentScore);
   }
 
-  function youLost() {
-    console.log("you lost")
-    //highscore stuff
+  // function youWon() {
+  //   console.log('you won');
+  //   setClickedPokemon([]); 
+  //   setCurrentScore(0);   
+  // }
+  // function youLost() {
+  //   console.log("you lost")
+  //   setClickedPokemon([]);
+  //   setCurrentScore(0);
+  // }
+  function gameFinished() {
     setClickedPokemon([]);
     setCurrentScore(0);
   }
@@ -48,7 +64,6 @@ function App() {
 
 
   //when state changes, rerender cards in different order. maybe js method function to randomize 1-12
-  //do I need to store images
 
   return (
     <div>
