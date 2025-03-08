@@ -3,26 +3,46 @@ import './App.css'
 import { Card } from './components/Card'
 
 function App() {
-  // let imageList = ["https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3FpYjQ4ZXg4ZHJ5MmVtMjNuaG9renF1YWx4cXdhNXJmcnl3YjdkNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/n2aqrebzEn6WgDE2Hu/giphy.gif",
-  //   "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3JidjAxcjJncmhhZ3IyYW8xenJuamF4MTFraHU1dDQ1YTlsOGl0eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/kaMwwM91UCxstRfvA3/giphy.gif"]
-
-  // let currentScore = 0;
-  // const [clickedPokemon, setClickedPokemon] = useState([]);
   const [pokeList, setPokeList] = useState([]);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [clickedPokemon, setClickedPokemon] = useState([]);
 
   useEffect(() => {
-    async function getPokemon() {
+    async function getPokemon(nrOfDesiredPokemon) {
       let tempPokeList = [];
-      for (let i = 1; i < 3; i++) {
+      for (let i = 1; i < (nrOfDesiredPokemon +1) ; i++) {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
         const pokemonData = await response.json();
-        let pokemonObject = { name: pokemonData.forms[0].name, icon: pokemonData.sprites.front_default }
+        let pokemonObject = { name: pokemonData.forms[0].name, icon: pokemonData.sprites.front_default, pokeIndex: i}
         tempPokeList.push(pokemonObject);
       };
+      console.log("called the api loop")
       setPokeList(tempPokeList);
     }
-    getPokemon();
+    getPokemon(2);
   }, []);
+
+  function submitClickedPokemon(pokeNr) {
+    if (clickedPokemon.includes(pokeNr)) {
+      youLost();
+    } else {
+      setClickedPokemon([...clickedPokemon, pokeNr]);
+      setCurrentScore(currentScore +1);
+      shuffleCards()
+    }
+    console.log(currentScore);
+  }
+
+  function youLost() {
+    console.log("you lost")
+    //highscore stuff
+    setClickedPokemon([]);
+    setCurrentScore(0);
+  }
+  function shuffleCards() {
+    console.log("shuffle cards")
+  }
+
 
   //list 1-12 if possible, if not URLs for 12 images
   //a state starting empty, and adding an image or nr every time a card is clicked
@@ -36,11 +56,11 @@ function App() {
 
   return (
     <div>
-      {/* {imageList.map(image => (
-      <Card imageURL={image}></Card>
-    ))} */}
+      <div>{currentScore}</div>
+
       {pokeList.map((pokemon) => (
-        <Card key={pokemon.name} imageURL={pokemon.icon} name={pokemon.name}></Card>
+        <Card key={pokemon.pokeIndex} imageURL={pokemon.icon} name={pokemon.name}
+        executeOnClick={() => submitClickedPokemon(pokemon.pokeIndex)} ></Card>
       ))}
     </div>
   )
