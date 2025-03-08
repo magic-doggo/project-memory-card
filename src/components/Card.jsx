@@ -1,7 +1,10 @@
 import { useState } from "react";
 
-export function Card({imageURL, character}) {
+export function Card({ imageURL, name }) {
     return (
-        <img src={imageURL} alt="asd" />
+        <div>
+            <div>{name}</div>
+            <img src={imageURL} alt="pokemon image" />
+        </div>
     )
 }
