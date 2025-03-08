@@ -6,6 +6,7 @@ function App() {
   const [pokeList, setPokeList] = useState([]);
   const [currentScore, setCurrentScore] = useState(0);
   const [clickedPokemon, setClickedPokemon] = useState([]);
+  const [bestScore, setBestScore] = useState(0);
 
   useEffect(() => {
     async function getPokemon(nrOfDesiredPokemon) {
@@ -27,8 +28,10 @@ function App() {
       youLost();
     } else {
       setClickedPokemon([...clickedPokemon, pokeNr]);
+      let tempScore = currentScore +1;
       setCurrentScore(currentScore +1);
-      shuffleCards()
+      shuffleCards();
+      if (tempScore > bestScore) setBestScore(tempScore);
     }
     console.log(currentScore);
   }
@@ -44,19 +47,13 @@ function App() {
   }
 
 
-  //list 1-12 if possible, if not URLs for 12 images
-  //a state starting empty, and adding an image or nr every time a card is clicked
-  //when card is clicked if card img/nr is already in state above, game over, save high score. reset state to empty
-  // else add card to state, increase current score by 1. does not need to be stored as state, just score variable?
   //when state changes, rerender cards in different order. maybe js method function to randomize 1-12
   //do I need to store images
 
-  //maybe setClickedPokemon state outside the effect. effect would check if something changed since last time? how? based on clickedPokemon state probably
-  //if no duplicates in state, rerender cards on screen, mapped based on each nr from clickedPokemon. or maybe check for duplicates before effect (to end or continue game)
-
   return (
     <div>
-      <div>{currentScore}</div>
+      <div>Current Score: {currentScore}</div>
+      <div>Best Score: {bestScore}</div>
 
       {pokeList.map((pokemon) => (
         <Card key={pokemon.pokeIndex} imageURL={pokemon.icon} name={pokemon.name}
