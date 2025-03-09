@@ -8,7 +8,7 @@ function App() {
   const [clickedPokemon, setClickedPokemon] = useState([]);
   const [bestScore, setBestScore] = useState(0);
   const [pokemonStartingIndex, setPokemonStartingIndex] = useState(10);
-  let nrOfDesiredPokemon = 5;
+  const [nrOfDesiredPokemon, setNrOfDesiredPokemon] = useState(5);
   //set wantEvolutions to 1 if you want to see multiple evos of same pokemon. Set to 3+ to skip most evolutions. 1025 max pokemon
   const [toggleWantEvolutions, setToggleWantEvolutions] = useState(1); 
 
@@ -30,11 +30,11 @@ function App() {
   useEffect(() => {
     async function getPokemon(nrOfPokemon) {
       let tempPokeList = [];
-      let tempIndex = pokemonStartingIndex;
       //go back to pokemon 1 if current operation would go past pokemon 1025 (last pokemon in api)
-      if (tempIndex + (nrOfPokemon * toggleWantEvolutions) > 1025) {
+      if (pokemonStartingIndex + (nrOfPokemon * toggleWantEvolutions) > 1025) {
         setPokemonStartingIndex(1);
       }
+      let tempIndex = pokemonStartingIndex;
       for (tempIndex; tempIndex < ((nrOfPokemon * toggleWantEvolutions) + pokemonStartingIndex); tempIndex += toggleWantEvolutions) {
         console.log(tempIndex);
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${tempIndex}`);
@@ -46,7 +46,7 @@ function App() {
       setPokeList(tempPokeList);
     }
     getPokemon(nrOfDesiredPokemon);
-  }, [pokemonStartingIndex, toggleWantEvolutions]);
+  }, [pokemonStartingIndex, toggleWantEvolutions, nrOfDesiredPokemon]);
 
 
   function submitClickedPokemon(pokeNr) {
@@ -102,6 +102,13 @@ function App() {
 
       <button onClick={() => setPokemonStartingIndex(pokemonStartingIndex + (toggleWantEvolutions * nrOfDesiredPokemon))}>New Pokemon</button>
       <button onClick={() => handleToggleWantEvolutions()}>Toggle Evolutions</button>
+
+      <div>
+        <div>Game Difficulty:</div>
+        <button onClick={() => setNrOfDesiredPokemon(6)}>Easy</button>
+        <button onClick={() => setNrOfDesiredPokemon(10)}>Medium</button>
+        <button onClick={() => setNrOfDesiredPokemon(15)}>Hard</button>
+      </div>
 
       {pokeList.map((pokemon) => (
         <Card key={pokemon.pokeIndex} imageURL={pokemon.icon} name={pokemon.name}
