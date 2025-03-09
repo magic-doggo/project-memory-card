@@ -9,7 +9,7 @@ function App() {
   const [clickedPokemon, setClickedPokemon] = useState([]);
   const [bestScore, setBestScore] = useState(0);
   const [pokemonStartingIndex, setPokemonStartingIndex] = useState(10);
-  const [nrOfDesiredPokemon, setNrOfDesiredPokemon] = useState(0);
+  const [nrOfDesiredPokemon, setNrOfDesiredPokemon] = useState(6);
   //set wantEvolutions to 1 if you want to see multiple evos of same pokemon. Set to 3+ to skip most evolutions. 1025 max pokemon
   const [toggleWantEvolutions, setToggleWantEvolutions] = useState(1); 
   function handleToggleWantEvolutions () {
@@ -85,7 +85,7 @@ function App() {
         <div className="pokemon-options-container">
           <h2>Pokemon options:</h2>
           <button onClick={() => setPokemonStartingIndex(pokemonStartingIndex + (toggleWantEvolutions * nrOfDesiredPokemon))}>New Pokemon</button>
-          <button onClick={() => handleToggleWantEvolutions()}>Toggle Evolutions</button>
+          <button onClick={() => handleToggleWantEvolutions()} className={toggleWantEvolutions==3 && 'toggled'}>Toggle hide evolutions</button>
         </div>
         <div className='difficulty-container'>
           <h2>Game Difficulty:</h2>

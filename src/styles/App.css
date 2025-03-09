@@ -42,3 +42,7 @@ h1,
   gap: 10px;
   margin: 22px 10px;
 }
+
+.toggled {
+  background-color: lightblue;
+}
